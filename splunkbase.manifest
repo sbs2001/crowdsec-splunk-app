@@ -1,0 +1,174 @@
+{
+  "version": "1.0",
+  "date": "2022-11-14T22:27:46.066929493Z",
+  "hashAlgorithm": "SHA-256",
+  "app": {
+    "id": 4903,
+    "version": "1.0.1",
+    "files": [
+      {
+        "path": "bin/cssmoke.py",
+        "hash": "d9a67ca57cff849a5489ee6454586eca8c64d41311ae3122580f3e73b8ffd8ed"
+      },
+      {
+        "path": "bin/splunklib/binding.py",
+        "hash": "05202a63ef2c094f958edd4951d573602b5a2ff191b55e15fe39be419033481d"
+      },
+      {
+        "path": "bin/splunklib/client.py",
+        "hash": "98b542e32391e8ffb9666d3a535da477973f1df66765e4277d4ce2534ee1323a"
+      },
+      {
+        "path": "bin/splunklib/data.py",
+        "hash": "2d4c7006186b005851321c225447b0f890d81d00067285a7da58a56636475054"
+      },
+      {
+        "path": "bin/splunklib/modularinput/argument.py",
+        "hash": "386603096d45c3b3ec3328317adc334c7d981a6d5f77312b657c5463207e58d5"
+      },
+      {
+        "path": "bin/splunklib/modularinput/event.py",
+        "hash": "c55fa7dfc338c4553c381def713feef1c965586068e411c658d6174dc7c93889"
+      },
+      {
+        "path": "bin/splunklib/modularinput/event_writer.py",
+        "hash": "331a71f9cec08f5efcce14582061223644e391bf0868484762224b1a22c52bfb"
+      },
+      {
+        "path": "bin/splunklib/modularinput/input_definition.py",
+        "hash": "444fd09df04b5c0d8985d12c86f7255734c129ca6963f92d43494e0251943cd7"
+      },
+      {
+        "path": "bin/splunklib/modularinput/scheme.py",
+        "hash": "c25945b449d5f74318f4536b3d1dcea0885dcd55386e5685ece35a11c2f77a44"
+      },
+      {
+        "path": "bin/splunklib/modularinput/script.py",
+        "hash": "29c6a4791e502069f5d9a4d9104e0ef730efd3afe5b816fd5d7e8f49c814cf49"
+      },
+      {
+        "path": "bin/splunklib/modularinput/utils.py",
+        "hash": "83436d75504c83787ccca21a0dfbad8a280043232959de9137ce6daa7a9470c6"
+      },
+      {
+        "path": "bin/splunklib/modularinput/validation_definition.py",
+        "hash": "a2b0f857f8589a9c6db87b2ffc685c3e785c183a079ca31253e2928539940b02"
+      },
+      {
+        "path": "bin/splunklib/modularinput/__init__.py",
+        "hash": "6c7c88d29dc6b41a008db14211bb9489b1052b09c70f267364ec12e05bedd33b"
+      },
+      {
+        "path": "bin/splunklib/ordereddict.py",
+        "hash": "b222ad43a7c540661416297cbe429ac06aac3a11e0cf859161b85bcf1c4cd15d"
+      },
+      {
+        "path": "bin/splunklib/results.py",
+        "hash": "6a6bdb1f77c2940c10c2f4e2d14b97bbde178c04fc9ac82217b4cae724451152"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/decorators.py",
+        "hash": "1114bc1cff0fb06578042bbd2a0b31902e942b0c080458c60d6aea887cb69b50"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/environment.py",
+        "hash": "997e76b662628010e782e22bcefccc1c5bbd5f2b039068ba58d9791ae50a293b"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/eventing_command.py",
+        "hash": "aafe6a0336b5e3eb7e6fd8bfb4c86c0b6fd8e3c2c77a08181b931d8a5d803e6e"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/external_search_command.py",
+        "hash": "9a5fbfe2a301671fccd0e62209ebc076945904b1bf8a1ee94d1b261256e7d9ad"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/generating_command.py",
+        "hash": "670fef6eba766405e53718ad530bed605bee6394175086ab9b6b380a8208f16f"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/internals.py",
+        "hash": "cb3bdd6b3ae22312f73d04f04b6066ce7efe9f49b3404a083d5e115b4db6d817"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/reporting_command.py",
+        "hash": "198aa65742ab1a8e75352186bdab95d09ba7fbb8f205a633aac6ff9926ab6a3b"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/search_command.py",
+        "hash": "8124a4c59b39ad9e797e720ab07a019b11ea6aca6cf871c3b6dfc48d96ce526e"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/streaming_command.py",
+        "hash": "426cde59e3d8cedf861c68a59a43787353e518001564bb3dfb4e7092edcfe58e"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/validators.py",
+        "hash": "43d7aae33501b98c67e7e1774720044b96c8a69f5d900c6efacfb408cd2b5057"
+      },
+      {
+        "path": "bin/splunklib/searchcommands/__init__.py",
+        "hash": "4499f53209862c3ea6abb43d5b50dc6b648b95cbbd4a349539e159c2f3cf1531"
+      },
+      {
+        "path": "bin/splunklib/six.py",
+        "hash": "43a5af1176750c6100480a370863422642afdad3f2f3191298af951c4f4f6080"
+      },
+      {
+        "path": "bin/splunklib/__init__.py",
+        "hash": "be4fcdaac9d15460035d79f97c2f4833b69a49bd50871c30ae06a4e01c05b3ed"
+      },
+      {
+        "path": "default/app.conf",
+        "hash": "5a8fb3ca761f92e47ef8c23ce0ec13c21696fc55faaac46330970e11dc87e170"
+      },
+      {
+        "path": "default/commands.conf",
+        "hash": "a6d9a02293be91b03a06e9060a66934cf607d4772892974d6e3cd3aaefa7c502"
+      },
+      {
+        "path": "default/config.json",
+        "hash": "ba15aef3b216010d6cf30e1ca387bb813ac77acd2b78ff4b71f05299cfa25717"
+      },
+      {
+        "path": "default/searchbnf.conf",
+        "hash": "3031dfe9954c0b5f27bc9237017b0be4ec83df139b87fd9df5bd6703cc569061"
+      },
+      {
+        "path": "metadata/default.meta",
+        "hash": "4580913269fd6d19bf8d00b2dfaa4563abdf3950985e440856ebbcaf65f8277c"
+      },
+      {
+        "path": "static/appIcon.png",
+        "hash": "151b4dcae498f1f660f20f3a849bd0d275efdad8470fcc18237964e28491fe34"
+      },
+      {
+        "path": "static/appIcon_2x.png",
+        "hash": "4640e5117b853ffe0f5a3237a9df6a68d3ec60eacaff9c7bc2bf5a6580cb3e99"
+      }
+    ]
+  },
+  "products": [
+    {
+      "platform": "splunk",
+      "product": "enterprise",
+      "versions": [
+        "7.0",
+        "7.1",
+        "7.2",
+        "7.3"
+      ],
+      "architectures": [
+        "x86_64"
+      ],
+      "operatingSystems": [
+        "windows",
+        "linux",
+        "macos",
+        "freebsd",
+        "solaris",
+        "aix"
+      ]
+    }
+  ]
+}
