@@ -3,7 +3,6 @@
 import sys
 import os
 import requests as req
-import json
 from splunklib.searchcommands import (
     dispatch,
     StreamingCommand,
@@ -11,7 +10,6 @@ from splunklib.searchcommands import (
     Option,
     validators,
 )
-import splunk.entity as entity
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib.searchcommands import (
@@ -24,7 +22,7 @@ from splunklib.searchcommands import (
 
 
 @Configuration()
-class cssmokeCommand(StreamingCommand):
+class CsSmokeCommand(StreamingCommand):
 
     """%(synopsis)
 
@@ -47,45 +45,19 @@ class cssmokeCommand(StreamingCommand):
     )
 
     def stream(self, events):
-        # Load config with user specified API key, if this file does not exist copy it from ../default
-        # with open("../default/config.json") as config_file:
-        #     data = json.load(config_file)
-        #     api_key = data["cssmoke"][0]["api_key"]
-        try:
-            sessionKey = sys.stdin.readline().strip()
-            print(sessionKey)
-        except Exception as e:
-            raise Exception("Could not get sessionKey {}".format(e))
-        myapp = "cssmoke"
-
-        try:
-            entities = entity.getEntities(
-                ["storage", "passwords"],
-                namespace=myapp,
-                owner="nobody",
-                sessionKey=sessionKey,
-            )
-        except Exception as e:
-            raise Exception("Could not get %s credentials from splunk. Error: %s"
-                      % (myapp, str(e)))
-
-        for i, c in entities.items():
-            username, api_key = c["username"], c["clear_password"]
-
-        # raise Exception("No credentials have been found")
-
-        if len(sessionKey == 0):
-            sys.stderr.write(
-                "Did not receive a session key from splunkd. "
-                + "Please enable passAuth in inputs.conf for this "
-                + "script\n"
-            )
-            exit()
+        api_key = ""
+        for passw in self.service.storage_passwords.list():
+            if passw.name == "crowdsec-splunk-app_realm:api_key:":
+                api_key = passw.clear_password
+                break
+        if not api_key:
+            raise Exception("No API Key found, please configure the app with CrowdSec CTI API Key")
 
         # API required headers
         headers = {
             "x-api-key": api_key,
             "Accept": "application/json",
+            "User-Agent": "crowdSec-splunk-app/v1.0.0",
         }
 
         for event in events:
@@ -93,7 +65,6 @@ class cssmokeCommand(StreamingCommand):
             # API required parameters
             params = (
                 ("ipAddress", event_dest_ip),
-                ("maxAgeInDays", "90"),
                 ("verbose", ""),
             )
             # Make API Request
@@ -105,140 +76,79 @@ class cssmokeCommand(StreamingCommand):
             )
             if response.status_code == 200:
                 data = response.json()
-
-                ip_range_score = data["ip_range_score"]
-                ip = data["ip"]
-                ip_range = data["ip_range"]
-                as_name = data["as_name"]
-                as_num = data["as_num"]
-
-                country = data["location"]["country"]
-                city = data["location"]["city"]
-                latitude = data["location"]["latitude"]
-                longitude = data["location"]["longitude"]
-                reverse_dns = data["reverse_dns"]
-
-                behaviors = data["behaviors"]
-
-                first_seen = data["history"]["first_seen"]
-                last_seen = data["history"]["last_seen"]
-                full_age = data["history"]["full_age"]
-                days_age = data["history"]["days_age"]
-
-                false_positives = data["classifications"]["false_positives"]
-                classifications = data["classifications"]["classifications"]
-
-                # attack_details
-                attack_details = data["attack_details"]
-
-                # target_countries
-                target_countries = data["target_countries"]
-
-                # background_noise_score
-                background_noise_score = data["background_noise_score"]
-
-                # overall
-                overall_aggresiveness = data["scores"]["overall"]["aggressiveness"]
-                overall_threat = data["scores"]["overall"]["threat"]
-                overall_trust = data["scores"]["overall"]["trust"]
-                overall_anomaly = data["scores"]["overall"]["anomaly"]
-                overall_total = data["scores"]["overall"]["total"]
-
-                # last_day
-                last_day_aggresiveness = data["scores"]["last_day"]["aggressiveness"]
-                last_day_threat = data["scores"]["last_day"]["threat"]
-                last_day_trust = data["scores"]["last_day"]["trust"]
-                last_day_anomaly = data["scores"]["last_day"]["anomaly"]
-                last_day_total = data["scores"]["last_day"]["total"]
-
-                # last_week
-                last_week_aggressiveness = data["scores"]["last_week"]["aggressiveness"]
-                last_week_threat = data["scores"]["last_week"]["threat"]
-                last_week_trust = data["scores"]["last_week"]["trust"]
-                last_week_anomaly = data["scores"]["last_week"]["anomaly"]
-                last_week_total = data["scores"]["last_week"]["total"]
-
-                # last_month
-                last_month_aggressiveness = data["scores"]["last_month"][
-                    "aggressiveness"
-                ]
-                last_month_threat = data["scores"]["last_month"]["threat"]
-                last_month_trust = data["scores"]["last_month"]["trust"]
-                last_month_anomaly = data["scores"]["last_month"]["anomaly"]
-                last_month_total = data["scores"]["last_month"]["total"]
-
-                # references
-                references = data["references"]
-
+                event = attach_resp_to_event(event, data)
+            elif response.status_code == 429:
+                event["error"] = '"Quota exceeded for CrowdSec CTI API. Please visit https://www.crowdsec.net/pricing to upgrade your plan."'
             else:
-                error = 1
-                event["ApiError"] = "Invalid Request:status_code=" + str(
-                    response.status_code
-                )
-
-            # Set event values to be returned
-            if error == 0:
-                event["ip_range_score"] = ip_range_score
-                event["ip"] = ip
-                event["ip_range"] = ip_range
-                event["as_name"] = as_name
-                event["as_num"] = as_num
-
-                event["country"] = country
-                event["city"] = city
-                event["latitude"] = latitude
-                event["longitude"] = longitude
-
-                event["reverse_dns"] = reverse_dns
-
-                event["behaviors"] = behaviors
-
-                event["first_seen"] = first_seen
-                event["last_seen"] = last_seen
-                event["full_age"] = full_age
-                event["days_age"] = days_age
-
-                event["false_positives"] = false_positives
-                event["classifications"] = classifications
-
-                # attack_details
-                event["attack_details"] = attack_details
-
-                # target_countries
-                event["target_countries"] = target_countries
-
-                # background_noise_score
-                event["background_noise_score"] = background_noise_score
-
-                # scores
-                event["overall_aggresiveness"] = overall_aggresiveness
-                event["overall_threat"] = overall_threat
-                event["overall_trust"] = overall_trust
-                event["overall_anomaly"] = overall_anomaly
-                event["overall_total"] = overall_total
-
-                event["last_day_aggresiveness"] = last_day_aggresiveness
-                event["last_day_threat"] = last_day_threat
-                event["last_day_trust"] = last_day_trust
-                event["last_day_anomaly"] = last_day_anomaly
-                event["last_day_total"] = last_day_total
-
-                event["last_week_aggressiveness"] = last_week_aggressiveness
-                event["last_week_threat"] = last_week_threat
-                event["last_week_trust"] = last_week_trust
-                event["last_week_anomaly"] = last_week_anomaly
-                event["last_week_total"] = last_week_total
-
-                event["last_month_aggressiveness"] = last_month_aggressiveness
-                event["last_month_threat"] = last_month_threat
-                event["last_month_trust"] = last_month_trust
-                event["last_month_anomaly"] = last_month_anomaly
-                event["last_month_total"] = last_month_total
-
-                event["references"] = references
+                event["error"] = f"Error {response.status_code} : {response.text}"
 
             # Finalize event
             yield event
 
 
-dispatch(cssmokeCommand, sys.argv, sys.stdin, sys.stdout, __name__)
+dispatch(CsSmokeCommand, sys.argv, sys.stdin, sys.stdout, __name__)
+
+def attach_resp_to_event(event, data):
+    event["ip_range_score"] = data["ip_range_score"]
+    event["ip"] = data["ip"]
+    event["ip_range"] = data["ip_range"]
+    event["as_name"] = data["as_name"]
+    event["as_num"] = data["as_num"]
+
+    event["country"] = data["location"]["country"]
+    event["city"] = data["location"]["city"]
+    event["latitude"] = data["location"]["latitude"]
+    event["longitude"] = data["location"]["longitude"]
+    event["reverse_dns"] = data["reverse_dns"]
+
+    event["behaviors"] = data["behaviors"]
+
+    event["first_seen"] = data["history"]["first_seen"]
+    event["last_seen"] = data["history"]["last_seen"]
+    event["full_age"] = data["history"]["full_age"]
+    event["days_age"] = data["history"]["days_age"]
+
+    event["false_positives"] = data["classifications"]["false_positives"]
+    event["classifications"] = data["classifications"]["classifications"]
+
+    # attack_details
+    event["attack_details"] = data["attack_details"]
+
+    # target_countries
+    event["target_countries"] = data["target_countries"]
+
+    # background_noise_score
+    event["background_noise_score"] = data["background_noise_score"]
+
+    # overall
+    event["overall_aggresiveness"] = data["scores"]["overall"]["aggressiveness"]
+    event["overall_threat"] = data["scores"]["overall"]["threat"]
+    event["overall_trust"] = data["scores"]["overall"]["trust"]
+    event["overall_anomaly"] = data["scores"]["overall"]["anomaly"]
+    event["overall_total"] = data["scores"]["overall"]["total"]
+
+    # last_day
+    event["last_day_aggresiveness"] = data["scores"]["last_day"]["aggressiveness"]
+    event["last_day_threat"] = data["scores"]["last_day"]["threat"]
+    event["last_day_trust"] = data["scores"]["last_day"]["trust"]
+    event["last_day_anomaly"] = data["scores"]["last_day"]["anomaly"]
+    event["last_day_total"] = data["scores"]["last_day"]["total"]
+
+    # last_week
+    event["last_week_aggressiveness"] = data["scores"]["last_week"]["aggressiveness"]
+    event["last_week_threat"] = data["scores"]["last_week"]["threat"]
+    event["last_week_trust"] = data["scores"]["last_week"]["trust"]
+    event["last_week_anomaly"] = data["scores"]["last_week"]["anomaly"]
+    event["last_week_total"] = data["scores"]["last_week"]["total"]
+
+    # last_month
+    event["last_month_aggressiveness"] = data["scores"]["last_month"][
+        "aggressiveness"
+    ]
+    event["last_month_threat"] = data["scores"]["last_month"]["threat"]
+    event["last_month_trust"] = data["scores"]["last_month"]["trust"]
+    event["last_month_anomaly"] = data["scores"]["last_month"]["anomaly"]
+    event["last_month_total"] = data["scores"]["last_month"]["total"]
+    # references
+    event["references"] = data["references"]
+    return event 

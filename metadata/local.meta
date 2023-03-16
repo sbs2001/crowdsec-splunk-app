@@ -1,0 +1,13 @@
+[passwords/credential%3Acrowdsec-splunk-app_realm%3Aadmin%3A]
+owner = shiv
+version = 9.0.4
+modtime = 1678987369.165350000
+
+[app/install]
+version = 9.0.4
+modtime = 1678990923.990413000
+
+[passwords/credential%3Acrowdsec-splunk-app_realm%3Aapi_key%3A]
+owner = shiv
+version = 9.0.4
+modtime = 1678990923.780230000
