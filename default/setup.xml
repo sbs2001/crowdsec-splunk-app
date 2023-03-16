@@ -1,0 +1,12 @@
+<setup>
+    <block title="Enter Credentials" endpoint="storage/passwords" entity="_new">
+            <input field="name">
+                <label>Username</label>
+                <type>text</type>
+            </input>
+            <input field="password">
+                <label>CrowdSec CTI API Key</label>
+                <type>text</type>
+            </input>
+    </block>
+</setup>

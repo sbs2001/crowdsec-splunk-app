@@ -11,6 +11,7 @@ from splunklib.searchcommands import (
     Option,
     validators,
 )
+import splunk.entity as entity
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib.searchcommands import (
@@ -47,9 +48,39 @@ class cssmokeCommand(StreamingCommand):
 
     def stream(self, events):
         # Load config with user specified API key, if this file does not exist copy it from ../default
-        with open("../default/config.json") as config_file:
-            data = json.load(config_file)
-            api_key = data["cssmoke"][0]["api_key"]
+        # with open("../default/config.json") as config_file:
+        #     data = json.load(config_file)
+        #     api_key = data["cssmoke"][0]["api_key"]
+        try:
+            sessionKey = sys.stdin.readline().strip()
+            print(sessionKey)
+        except Exception as e:
+            raise Exception("Could not get sessionKey {}".format(e))
+        myapp = "cssmoke"
+
+        try:
+            entities = entity.getEntities(
+                ["storage", "passwords"],
+                namespace=myapp,
+                owner="nobody",
+                sessionKey=sessionKey,
+            )
+        except Exception as e:
+            raise Exception("Could not get %s credentials from splunk. Error: %s"
+                      % (myapp, str(e)))
+
+        for i, c in entities.items():
+            username, api_key = c["username"], c["clear_password"]
+
+        # raise Exception("No credentials have been found")
+
+        if len(sessionKey == 0):
+            sys.stderr.write(
+                "Did not receive a session key from splunkd. "
+                + "Please enable passAuth in inputs.conf for this "
+                + "script\n"
+            )
+            exit()
 
         # API required headers
         headers = {
@@ -99,7 +130,6 @@ class cssmokeCommand(StreamingCommand):
 
                 # attack_details
                 attack_details = data["attack_details"]
-
 
                 # target_countries
                 target_countries = data["target_countries"]
