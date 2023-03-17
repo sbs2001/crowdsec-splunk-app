@@ -1,9 +1,5 @@
 ## Overview
-The CrowdSec Splunk app leverages the CrowdSec's CTI API's smoke endpoint which enables users to query an IP. It runs an IP check against the CrowdSec CTI and returns the relevant fields including location, reverse_dns, behaviors, history, classifications, attack details, target countries, scores, and references by specifying the name of the IP address field with the required ipfield parameter. 
-
-**Author**: CrowdSec \
-**Version**: v0.0.1-rc2 \
-**Prerequisites**: CrowdSec's CTI API Key
+The CrowdSec Splunk app leverages the CrowdSec's CTI API's smoke endpoint which enables users to query an IP and receive enrichment
 
 ## Example Usage
 
