@@ -26,7 +26,7 @@ jobs:
     
     - name: Upload to SplunkBase
       run: |
-        curl -u "${{ secrets.SPLUNKBASE_USERNAME }}:${{ secrets.SPLUNKBASE_PASSWORD }} integrations-ssa@crowdsec.net:Fyqpn#rs55tmT&Ua*PyJHw99zT"   --request POST \
+        curl -u "${{ secrets.SPLUNKBASE_USERNAME }}:${{ secrets.SPLUNKBASE_PASSWORD }}"   --request POST \
         "https://splunkbase.splunk.com/api/v1/app/6800/new_release/" \
         -F "files[]=@crowdsec-splunk-app.tar.gz" \
         -F "filename=crowdsec-splunk-app.tar.gz" \
