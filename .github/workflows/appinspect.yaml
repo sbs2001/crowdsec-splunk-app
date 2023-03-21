@@ -49,8 +49,9 @@ jobs:
       
       - name: Check App Inspect Report Results
         run: |
-          grep -i '"result": "failure"' /tmp/report
-          if [ $? -eq 0 ]; then
-            echo "::error::App inspect check failed"
-            exit 1
+          if grep -q '"result": "failure"' /tmp/report; then
+              echo "::error::App inspect check failed"
+              exit 1
+          else
+              exit 0
           fi
