@@ -27,7 +27,7 @@ jobs:
         cp crowdsec-splunk-app-*.tar.gz  /tmp/crowdsec-splunk-app.tar.gz
     - name: Get report
       run: |
-        TOKEN=$(curl -u "${{ secrets.SPLUNKBASE_USERNAME }}:${{ secrets.SPLUNKBASE_PASSWORD }}" --url "https://api.splunk.com/2.0/rest/login/splunk" | jq -r .data.token)
+        TOKEN=$(curl -u ${{ secrets.SPLUNKBASE_USERNAME }}:${{ secrets.SPLUNKBASE_PASSWORD }} --url "https://api.splunk.com/2.0/rest/login/splunk" | jq -r .data.token)
         echo "::add-mask::$TOKEN"
         REPORT_HREF=$(curl -X POST \
         -H "Authorization: bearer $TOKEN" \
